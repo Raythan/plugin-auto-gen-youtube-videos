@@ -234,7 +234,7 @@ if (!globalThis.__labsFlowBootstrapped) {
 
       const result = await requestFlowPageBridge("clickSubmit");
       if (result?.submitted || hasSubmitTakenEffect(beforeTiles, beforeImages, beforePromptLen)) {
-        return;
+        return true;
       }
 
       if (result?.wrongButton) {
@@ -249,17 +249,13 @@ if (!globalThis.__labsFlowBootstrapped) {
         await sleep(120);
         btn.click();
         await sleep(400);
-        if (hasSubmitTakenEffect(beforeTiles, beforeImages, beforePromptLen)) return;
+        if (hasSubmitTakenEffect(beforeTiles, beforeImages, beforePromptLen)) return true;
       }
 
       await sleep(300);
     }
 
-    if (getPromptText().length > 0) {
-      throw new Error(
-        "Prompt preenchido no Google Flow, mas o envio não foi confirmado. Verifique se o botão da seta (arrow_forward) foi acionado, não o + (add_2)."
-      );
-    }
+    return false;
   }
 
   function dispatchPasteOnElement(el, text) {
@@ -484,10 +480,13 @@ if (!globalThis.__labsFlowBootstrapped) {
 
   async function tickImageWait(job) {
     const elapsed = Math.round((Date.now() - job.startedAt) / 1000);
-    if (elapsed > 0 && elapsed % 5 === 0 && job.step !== `t${elapsed}`) {
-      job.step = `t${elapsed}`;
+    if (elapsed > 0 && Math.floor(elapsed) % 5 === 0 && job.step !== `t${Math.floor(elapsed)}`) {
+      job.step = `t${Math.floor(elapsed)}`;
+      const msg = job.manualWait 
+        ? `2/3 — Aguardando clique manual no Google Flow… (${Math.floor(elapsed)}s)`
+        : `2/3 — Aguardando imagem no Google Flow… (${Math.floor(elapsed)}s)`;
       await ext.storage.local.set({
-        [RUN_STORAGE.step]: `2/3 — Aguardando imagem no Google Flow… (${elapsed}s)`,
+        [RUN_STORAGE.step]: msg,
       });
     }
 
@@ -571,30 +570,36 @@ if (!globalThis.__labsFlowBootstrapped) {
     await waitForPromptInput();
     await closeComposerDialogs();
 
-    let fillResult = await requestFlowPageBridge("fillPrompt", { prompt });
-    if (!fillResult?.submitReady) {
-      if (!fillResult?.filled) {
-        const input = findPromptInputSync();
-        if (input) fillPrompt(input, prompt);
-        await sleep(500);
+    let submitted = false;
+    let manualWait = false;
+
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      let fillResult = await requestFlowPageBridge("fillPrompt", { prompt });
+      if (!fillResult?.submitReady) {
+        if (!fillResult?.filled) {
+          const input = findPromptInputSync();
+          if (input) fillPrompt(input, prompt);
+          await sleep(500);
+        }
+        if (!isSubmitButtonEnabled(findSubmitButton())) {
+          fillResult = await requestFlowPageBridge("fillPrompt", { prompt });
+        }
       }
-      if (!isSubmitButtonEnabled(findSubmitButton())) {
-        fillResult = await requestFlowPageBridge("fillPrompt", { prompt });
+
+      const enabledBtn = await waitForSubmitButtonEnabled(15000);
+      if (enabledBtn) {
+        await closeComposerDialogs();
+        submitted = await submitPrompt(baselineTileIds, baselineSrcs);
+        if (submitted) break;
       }
+      
+      await sleep(1000);
     }
 
-    const enabledBtn = await waitForSubmitButtonEnabled(30000);
-    if (!enabledBtn) {
-      const hasText = getPromptText().length > 0;
-      throw new Error(
-        hasText
-          ? "Prompt no Google Flow, mas o botão da seta (→) não habilitou. Recarregue a aba do Flow (F5) e tente de novo."
-          : "Não foi possível colar o prompt no Google Flow. Recarregue a aba do Flow (F5) e tente de novo."
-      );
+    if (!submitted) {
+      console.warn("Falha ao submeter prompt automaticamente. Aguardando clique manual do usuário.");
+      manualWait = true;
     }
-
-    await closeComposerDialogs();
-    await submitPrompt(baselineTileIds, baselineSrcs);
 
     workflowJob = {
       startedAt: Date.now(),
@@ -606,6 +611,7 @@ if (!globalThis.__labsFlowBootstrapped) {
       submitAttempts: 0,
       lastSubmitAt: Date.now(),
       step: "",
+      manualWait,
     };
   }
 
