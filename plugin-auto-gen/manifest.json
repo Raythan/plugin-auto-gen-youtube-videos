@@ -1,0 +1,73 @@
+{
+  "manifest_version": 3,
+  "name": "ChatGPT + Flow → Content Bridge",
+  "version": "3.2.0",
+  "description": "Roteiro JSON no ChatGPT, imagens no Google Flow e exportação para o console de vídeo.",
+  "action": {
+    "default_title": "Content Bridge (ChatGPT + Flow)",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/workflow.png",
+      "32": "icons/workflow.png",
+      "48": "icons/workflow.png",
+      "96": "icons/workflow.png",
+      "128": "icons/workflow.png"
+    }
+  },
+  "icons": {
+    "16": "icons/workflow.png",
+    "32": "icons/workflow.png",
+    "48": "icons/workflow.png",
+    "96": "icons/workflow.png",
+    "128": "icons/workflow.png"
+  },
+  "permissions": ["storage", "tabs", "scripting", "alarms", "windows", "clipboardWrite", "clipboardRead"],
+  "host_permissions": [
+    "https://chatgpt.com/*",
+    "https://chat.openai.com/*",
+    "https://*.oaistatic.com/*",
+    "https://labs.google/*",
+    "https://*.googleusercontent.com/*",
+    "http://127.0.0.1/*",
+    "http://localhost/*"
+  ],
+  "background": {
+    "scripts": [
+      "shared/constants.js",
+      "shared/form-persist.js",
+      "shared/log.js",
+      "shared/parse-json.js",
+      "shared/export-bridge.js",
+      "background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://chat.openai.com/*"],
+      "js": ["shared/constants.js", "shared/form-persist.js", "shared/parse-json.js", "content/chatgpt.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://labs.google/*"],
+      "js": ["shared/flow-composer-dom.js", "content/labs-flow-page.js"],
+      "run_at": "document_start",
+      "world": "MAIN"
+    },
+    {
+      "matches": ["https://labs.google/*"],
+      "js": [
+        "shared/constants.js",
+        "shared/flow-composer-dom.js",
+        "shared/image-capture.js",
+        "content/labs-flow.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "contador@plugin-auto-gen.local",
+      "strict_min_version": "109.0"
+    }
+  }
+}

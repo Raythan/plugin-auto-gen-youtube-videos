@@ -1,0 +1,151 @@
+news_items_per_video: 1
+
+gemini:
+  # Em Windows o pipeline localiza automaticamente o CLI: shutil.which respeita
+  # PATHEXT (encontra gemini.cmd/.exe) e ainda tenta fallbacks em
+  # %APPDATA%\npm, %LOCALAPPDATA%\npm e %USERPROFILE%\.npm-global. So precisa
+  # ajustar este campo se o CLI estiver instalado fora do prefixo padrao do npm
+  # (ex.: command: C:/ferramentas/gemini/gemini.cmd). Para sobrescrever apenas
+  # nesta maquina, use config/local.yaml em vez de editar este arquivo.
+  command: gemini
+  args:
+    - generate
+    - --skip-trust
+    - --model
+    - gemini-2.5-flash
+  timeout_seconds: 300
+  # Chaves API: use um ficheiro PARTILHADO entre projetos (ver GEMINI_KEYS_FILE e
+  # ~/.config/gemini/keys.txt em config/env.example). Esta entrada e apenas fallback
+  # opcional por repositorio (nao e obrigatoria se usar o ficheiro global).
+  keys_file: config/secrets/gemini_keys.txt
+  # Politica de uso quando ha varias chaves: round_robin (uma por chamada) ou failover (so troca em erro).
+  rotation: round_robin
+  # Tempo minimo entre dois requests ao CLI Gemini (qualquer canal). Evita bloqueios por rajada.
+  min_seconds_between_requests: 30
+  # Quando todas as chaves devolvem erro de quota/limit, ficamos parados por este tempo
+  # antes de tentar de novo. Durante o cooldown a geracao usa o roteiro local de fallback.
+  cooldown_after_quota_seconds: 300
+  # Incluir resumo dos ultimos videos no prompt para o Gemini variar os temas.
+  # O bloco RECENT_VIDEOS mostra titulo/template dos ultimos N runs do canal.
+  recent_runs:
+    enabled: true
+    limit: 20
+    summary_max_chars: 140
+
+# Flags de runtime com defaults do projeto. Variaveis de ambiente de mesmo nome
+# (PIPELINE_USE_GEMINI / PIPELINE_UPLOAD_YOUTUBE) tem prioridade sobre estes valores.
+runtime:
+  use_gemini: true
+  upload_youtube: true
+
+# Canal rpjtechgroup usa mode: gemini_freeform (sem RSS).
+# channel_sources vazio: nenhum feed é carregado para este canal.
+# (Mantido aqui como ponto de extensão caso um canal futuro precise de RSS.)
+channel_sources: {}
+
+# Manifests antigos na fila: ids legados apontam para rpjtechgroup.
+channel_id_aliases:
+  main: rpjtechgroup
+  minuto_carro: rpjtechgroup
+  carro_em_um_minuto: rpjtechgroup
+  animesse: rpjtechgroup
+
+# Fonte de conteudo: plugin (ChatGPT via extensao) ou gemini (pipeline legado).
+content_source: plugin
+
+# Bridge HTTP: o plugin envia roteiro + imagens para esta fila em disco.
+content_bridge:
+  enabled: true
+  host: 127.0.0.1
+  port: 8765
+  inbox_dir: data/pending_content
+  processed_dir: data/processed_content
+  auth_token: ""
+  max_payload_bytes: 52428800
+
+# Console infinito: gera videos por canal (config/channels_config_structure/*.yaml),
+# publica continuamente o que estiver na fila e mantem a maquina acordada com um ping leve.
+# Inicie com `python -m src.pipeline console`.
+console:
+  enabled: true
+  timezone: America/Sao_Paulo
+  # De quanto em quanto tempo o loop de geracao acorda para checar o relogio dos canais.
+  check_interval_seconds: 30
+  # Pastas da fila de publicacao (relativas a raiz do projeto).
+  queue_dir: data/pending_uploads
+  uploaded_dir: data/uploaded
+  publish:
+    # De quanto em quanto tempo o loop de publicacao tenta enviar o proximo video da fila.
+    poll_interval_seconds: 60
+  keep_alive:
+    # Atividade leve para o notebook nao dormir. Modo http_get faz GET na URL,
+    # modo process executa um comando rapido (default: ping 1.1.1.1).
+    interval_seconds: 3600
+    mode: http_get
+    target: https://www.gstatic.com/generate_204
+    timeout_seconds: 10
+
+# Duracao e tamanho do roteiro falado (script_text). O video segue o audio do TTS.
+# Canais podem sobrescrever com ``script_target:`` na raiz do YAML do canal.
+script_target:
+  min_seconds: 20
+  max_seconds: 35
+  min_words: 55
+  max_words: 95
+
+image_gen:
+  # Pollinations primeiro (gratis/anonimo); HF so quando tiver creditos no token.
+  providers:
+    - pollinations
+    - fal
+    - deepai
+    - huggingface
+  # Uma chave por linha (# comentarios ok). Rotacao round-robin em quota/rate limit (429/403).
+  keys_files:
+    huggingface: config/secrets/hf_keys.txt
+    deepai: config/secrets/deepai_key.txt
+    fal: config/secrets/fal_keys.txt
+    pollinations: config/secrets/pollinations_keys.txt
+  # Espaçamento mínimo global entre qualquer request de imagem (evita rajada).
+  min_seconds_between_requests: 5
+  # Espaçamento mínimo por provedor (Pollinations tem rate-limit ~1 req/min por IP sem auth).
+  pollinations_min_gap_seconds: 90
+  # Pollinations mantem no maximo 1 pedido na fila por IP; Flux pode levar varios minutos.
+  pollinations_timeout_seconds: 360
+  pollinations_queue_full_wait_seconds: 180
+  pollinations_queue_full_max_retries: 8
+  huggingface_min_gap_seconds: 5
+  deepai_min_gap_seconds: 3
+  fal_min_gap_seconds: 3
+  timeout_seconds: 60
+  width: 1080
+  height: 1920
+  after_use: delete
+  # Tentativas por cena antes de pular slide (sem fallback local — pipeline aguarda APIs).
+  max_attempts_per_scene: 8
+
+# Brand metadata used for scripts, captions and YouTube descriptions.
+brand:
+  name: RPJ Tech Group
+  website: https://rpjtechgroup.github.io/
+  email: rpjtechgroup@gmail.com
+  positioning: >-
+    Consultoria de tecnologia e software house entregando estrategia, economia
+    e solucoes inteligentes sob demanda.
+  pillars:
+    - estrategia
+    - economia
+    - solucoes inteligentes
+    - entrega de valor sob demanda
+  cta_short: >-
+    Ideia maluca no papel ou problema dificil? Chama a RPJ Tech Group: rola conversa
+    de graca pra ver caminho. Site e e-mail estao na descricao do video.
+  description_footer: |
+    Sobre a RPJ Tech Group
+    Consultoria de tecnologia e software house focada em estrategia, economia e solucoes inteligentes, com entrega de valor sob demanda.
+
+    Consultoria gratis: agende uma conversa sem compromisso.
+    Site: https://rpjtechgroup.github.io/
+    E-mail: rpjtechgroup@gmail.com
+
+    #RPJTechGroup #Tecnologia #Consultoria #SoftwareHouse #Estrategia

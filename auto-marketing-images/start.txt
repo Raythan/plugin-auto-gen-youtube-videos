@@ -1,0 +1,16 @@
+# Comandos úteis — canal rpjtechgroup
+
+# Gerar um short (debug)
+python -m src.pipeline generate --channel rpjtechgroup
+
+# Console (geração agendada + fila de upload)
+python -m src.pipeline console
+
+# OAuth YouTube (primeira vez ou token expirado)
+python -m src.pipeline oauth-reauth --channel rpjtechgroup
+
+# Verificar tokens
+python -m src.pipeline check-oauth
+
+# Publicar próximo da fila
+python -m src.pipeline publish

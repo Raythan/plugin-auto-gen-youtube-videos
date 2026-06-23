@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auto-marketing"
+version = "0.1.0"
+description = "RPJ Tech Group YouTube Shorts pipeline (news, Gemini scripts, upload)"
+requires-python = ">=3.11"
+dependencies = [
+  "PyYAML>=6.0",
+  "feedparser>=6.0.11",
+  "requests>=2.32.3",
+  "beautifulsoup4>=4.12.3",
+  "moviepy>=1.0.3,<2",
+  "gTTS>=2.5.1",
+  "edge-tts>=6.1.12",
+  "gradio-client>=1.0.0",
+  "python-dotenv>=1.0.1",
+  "google-api-python-client>=2.169.0",
+  "google-auth-oauthlib>=1.2.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

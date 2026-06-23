@@ -1,0 +1,16 @@
+# Contas OAuth do YouTube — canal único RPJ Tech Group (rpjtechgroup).
+#
+# Credenciais: config/secrets/rpjtechgroup_client_secret.json
+# Token após OAuth: config/secrets/rpjtechgroup_token.json
+
+accounts:
+  rpjtechgroup:
+    client_secret_file: config/secrets/rpjtechgroup_client_secret.json
+    token_file: config/secrets/rpjtechgroup_token.json
+    privacy_status: public
+
+  # Alias legado (manifests antigos com youtube_account: main)
+  main:
+    client_secret_file: config/secrets/rpjtechgroup_client_secret.json
+    token_file: config/secrets/rpjtechgroup_token.json
+    privacy_status: public

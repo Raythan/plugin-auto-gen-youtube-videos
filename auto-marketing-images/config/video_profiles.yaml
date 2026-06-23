@@ -1,0 +1,140 @@
+# Perfis de renderização — canal único rpjtechgroup (imagens IA + hyper-edit).
+#
+# Modo ai_slides: imagens geradas por IA, ~3s por slide, um efeito sorteado por slide.
+#
+# TTS: hf_chain (OmniVoice -> Parler -> Edge -> gTTS) com fallback automático.
+#
+# Legendas: contorno preto (#000000), cor/fonte rotativas (ver perfil).
+
+subtitle_legend_defaults: &subtitle_legend
+  subtitle_color_rotate: true
+  subtitle_color: "#FFFF00"
+  subtitle_stroke_color: "#000000"
+
+tts_natural_defaults: &tts_natural
+  tts_rate: "+0%"
+  tts_pitch: "+0Hz"
+  tts_volume: "+0%"
+  tts_sentence_chunking: false
+  tts_sentence_gap_ms: 0
+  tts_audio_normalize: true
+
+tts_voice_francisca: &tts_voice_francisca
+  tts_voice_rotate: true
+  tts_voices:
+    - pt-BR-FranciscaNeural
+  tts_voice: pt-BR-FranciscaNeural
+
+tts_voice_antonio: &tts_voice_antonio
+  tts_voice_rotate: true
+  tts_voices:
+    - pt-BR-AntonioNeural
+  tts_voice: pt-BR-AntonioNeural
+
+tts_hf_defaults: &tts_hf_defaults
+  tts_engine: hf_chain
+  tts_hf_token_file: config/secrets/hf_keys.txt
+  tts_hf_timeout_seconds: 180
+  tts_hf_max_attempts: 3
+  tts_hf_retry_backoff_seconds: 2.0
+  tts_hf_primary_space: k2-fsa/OmniVoice
+  tts_hf_secondary_space: parler-tts/parler_tts
+  tts_hf_secondary_timeout_seconds: 90
+  tts_hf_secondary_max_attempts: 2
+  tts_hf_secondary_retry_backoff_seconds: 1.5
+  tts_hf_languages: Portuguese
+  tts_hf_genders:
+    - "Auto"
+    - "Male / 男"
+    - "Female / 女"
+  tts_hf_ages:
+    - "Teenager / 少年"
+    - "Young Adult / 青年"
+    - "Middle-aged / 中年"
+  tts_hf_pitches:
+    - "Moderate Pitch / 中音调"
+    - "High Pitch / 高音调"
+    - "Very High Pitch / 极高音调"
+  tts_hf_styles:
+    - "Auto"
+  tts_hf_accents: "Portuguese Accent / 葡萄牙口音"
+  tts_hf_dialects:
+    - "Auto"
+  tts_hf_speed_range: [0.92, 1.05]
+  tts_hf_cfg_scale_range: [1.2, 2.8]
+  tts_hf_steps_range: [24, 40]
+  tts_hf_duration_seconds_range: [3, 45]
+  tts_hf_duration_chars_per_second: 14
+  tts_hf_duration_headroom: 1.15
+  tts_parler_descriptions:
+    - "A Brazilian Portuguese speaker with warm, professional cadence and clear diction."
+    - "A confident Brazilian Portuguese narrator speaking naturally about technology and business."
+  tts_parler_description: "A Brazilian Portuguese speaker with warm, professional cadence and clear diction."
+
+profiles:
+  rpjtechgroup_default:
+    <<: *subtitle_legend
+    <<: *tts_natural
+    <<: *tts_hf_defaults
+    <<: *tts_voice_francisca
+    visual_mode: ai_slides
+    tts_lang: pt
+    subtitle_font_rotate: true
+    subtitle_font_size: 64
+    subtitle_stroke_width: 3
+    subtitle_position: center
+    subtitle_words_per_chunk: 7
+    slides:
+      duration_seconds: 3
+    hyper_edit:
+      enabled: true
+      effect_pool:
+        # --- Câmera / movimento primário ---
+        - parallax_zoom
+        - corner_zoom_pan
+        - cinematic_dolly
+        - zoom_pulse
+        - heartbeat_pulse
+        - bounce_zoom
+        - whip_zoom
+        - drift_float
+        # --- Câmera + rotação ---
+        - rotation_drift
+        - rotation_bounce
+        # --- Shake ---
+        - camera_shake
+        - pendulum_shake
+        # --- Cor + movimento ---
+        - exposure_flash
+        - flicker_strobe
+        - rgb_glow
+        - deep_fried
+        - glitch_cut
+      avoid_consecutive_repeat: true
+
+  rpjtechgroup_fast_test:
+    <<: *subtitle_legend
+    <<: *tts_natural
+    <<: *tts_hf_defaults
+    <<: *tts_voice_antonio
+    visual_mode: ai_slides
+    tts_lang: pt
+    subtitle_font_rotate: true
+    subtitle_font_size: 58
+    subtitle_stroke_width: 3
+    subtitle_position: center
+    subtitle_words_per_chunk: 7
+    slides:
+      duration_seconds: 2
+    hyper_edit:
+      enabled: true
+      effect_pool:
+        - parallax_zoom
+        - corner_zoom_pan
+        - zoom_pulse
+        - cinematic_dolly
+        - rotation_drift
+        - drift_float
+        - heartbeat_pulse
+        - pendulum_shake
+      avoid_consecutive_repeat: true

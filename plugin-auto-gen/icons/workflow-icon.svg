@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1b26"/>
+      <stop offset="100%" style="stop-color:#24283b"/>
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7aa2f7"/>
+      <stop offset="50%" style="stop-color:#bb9af7"/>
+      <stop offset="100%" style="stop-color:#9ece6a"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect x="4" y="4" width="120" height="120" rx="24" fill="url(#bgGradient)" stroke="#414868" stroke-width="2"/>
+  
+  <!-- Workflow Nodes -->
+  <!-- Input Node -->
+  <rect x="14" y="52" width="24" height="24" rx="6" fill="#24283b" stroke="#7aa2f7" stroke-width="2"/>
+  <text x="26" y="68" text-anchor="middle" fill="#7aa2f7" font-size="10" font-family="system-ui" font-weight="bold">1</text>
+  
+  <!-- Processing Node -->
+  <rect x="52" y="52" width="24" height="24" rx="6" fill="#24283b" stroke="#bb9af7" stroke-width="2"/>
+  <text x="64" y="68" text-anchor="middle" fill="#bb9af7" font-size="10" font-family="system-ui" font-weight="bold">2</text>
+  
+  <!-- Output Node -->
+  <rect x="90" y="52" width="24" height="24" rx="6" fill="#24283b" stroke="#9ece6a" stroke-width="2"/>
+  <text x="102" y="68" text-anchor="middle" fill="#9ece6a" font-size="10" font-family="system-ui" font-weight="bold">3</text>
+  
+  <!-- Connection Lines -->
+  <path d="M38 64 L52 64" stroke="url(#accentGradient)" stroke-width="3" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M76 64 L90 64" stroke="url(#accentGradient)" stroke-width="3" stroke-linecap="round" filter="url(#glow)"/>
+  
+  <!-- Direction Arrows -->
+  <polygon points="48,64 44,61 44,67" fill="#7aa2f7"/>
+  <polygon points="86,64 82,61 82,67" fill="#bb9af7"/>
+  
+  <!-- Loop Arrow (bottom) -->
+  <path d="M102 76 Q102 96 64 96 Q26 96 26 76" stroke="#9ece6a" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="4 2"/>
+  <polygon points="26,72 23,76 29,76" fill="#9ece6a"/>
+  
+  <!-- Spark/Play Icon Center -->
+  <circle cx="64" cy="32" r="10" fill="#24283b" stroke="#e0af68" stroke-width="2"/>
+  <polygon points="64,27 68,32 64,37 60,32" fill="#e0af68"/>
+  
+  <!-- Bottom Label -->
+  <text x="64" y="114" text-anchor="middle" fill="#a9b1d6" font-size="8" font-family="system-ui" font-weight="500" letter-spacing="1">AUTO FLOW</text>
+</svg>

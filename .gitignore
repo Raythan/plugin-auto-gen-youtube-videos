@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+/node_modules/
+
+# Editor / System files
+.cursor/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets & Environment variables
+.env
+.env.*
+*.env
+**/.env
+**/.env.*
+**/chaves/
+**/secrets/
+
+# Python caching & environments
+**/__pycache__/
+**/*.py[cod]
+**/*.so
+**/.venv/
+**/venv/
+**/*.egg-info/
+**/dist/
+**/build/
+
+# Logs and runtime outputs
+**/logs/**/*
+!**/logs/
+!**/logs/.gitkeep
+**/output/**/*
+!**/output/
+!**/output/.gitkeep
+**/data/**/*
+!**/data/
+!**/data/.gitkeep

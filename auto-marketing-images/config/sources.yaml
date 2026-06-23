@@ -1,0 +1,74 @@
+# Fontes para o roteiro do pipeline (canal rpjtechgroup). RSS recentes entram primeiro;
+# briefings RPJ ficam como fallback quando todas as noticias dos feeds ja foram vistas.
+
+sources:
+  - name: Canaltech
+    type: rss
+    url: https://canaltech.com.br/rss/
+    max_items: 12
+
+  - name: Tecnoblog
+    type: rss
+    url: https://www.tecnoblog.net/feed/
+    max_items: 12
+
+  - name: Olhar Digital
+    type: rss
+    url: https://olhardigital.com.br/feed/
+    max_items: 10
+
+  - name: Adrenaline
+    type: rss
+    url: https://www.adrenaline.com.br/rss/
+    max_items: 12
+
+  - name: RPJ Tech Group Briefings
+    type: briefings
+    items:
+      - id: rpj_estrategia_tecnologia
+        title: Como escolher tecnologia com estrategia, sem se perder em buzzwords
+        summary: >-
+          Empresas perdem tempo e dinheiro escolhendo stack pelo hype. Trazer a
+          decisao de volta para o objetivo de negocio reduz custo e acelera
+          entrega. Angulo de consultoria, sem tom de venda.
+      - id: rpj_economia_software
+        title: Onde o software economiza dinheiro de verdade
+        summary: >-
+          Automacoes pequenas e bem priorizadas pagam mais conta do que grandes
+          reformas. Mostrar como olhar para custo, processo e fricciones para
+          escolher onde investir primeiro.
+      - id: rpj_solucoes_inteligentes
+        title: Solucoes inteligentes nao sao as mais complexas
+        summary: >-
+          A solucao certa costuma ser a mais simples que resolve o problema do
+          cliente final. Falar sobre como recortar escopo e medir impacto antes
+          de escalar.
+      - id: rpj_sob_demanda
+        title: "Entrega sob demanda: ritmo previsivel sem time inchado"
+        summary: >-
+          Modelo de squad sob demanda combina velocidade e controle de custo.
+          Ideal para empresas que precisam evoluir produto sem montar estrutura
+          interna do zero.
+      - id: rpj_divida_tecnica
+        title: Divida tecnica e prioridade de negocio
+        summary: >-
+          Divida tecnica nao e vilao automatico. Ela vira problema quando bloqueia
+          uma decisao de negocio. Ajudar o leitor a olhar com calma para o que
+          realmente trava o roadmap.
+      - id: rpj_seguranca_pratica
+        title: Seguranca pratica para empresas que nao tem CISO
+        summary: >-
+          Pequenas e medias empresas podem reduzir risco com poucas praticas
+          fundamentais. Trazer um angulo consultivo, sem alarmismo.
+      - id: rpj_dados_decisao
+        title: Dados que ajudam a decidir, nao a enfeitar
+        summary: >-
+          Dashboards bonitos nao garantem decisao. O que importa e ter poucas
+          metricas que conversam com objetivo do negocio. Olhar de consultoria,
+          sem jargao.
+      - id: rpj_cloud_custo
+        title: Cloud que economiza, nao que assusta no fim do mes
+        summary: >-
+          Custos de cloud explodem quando a arquitetura e os ambientes nao tem
+          governanca. Falar sobre como olhar consumo, ambientes e contratos com
+          cabeca de estrategia.

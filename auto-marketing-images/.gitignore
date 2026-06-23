@@ -1,0 +1,48 @@
+# Secrets and local env
+# Canonical secrets: config/secrets/ (see .cursorrules). Top-level /secrets/ is legacy only.
+.env
+.env.local
+chaves/
+/secrets/
+
+# Config local overrides and per-machine secrets (everything inside config/secrets/
+# except the `.gitkeep` and `*.example.*` templates is ignored).
+config/.env
+config/local.yaml
+config/local_service.json
+config/secrets/*
+!config/secrets/.gitkeep
+!config/secrets/*.example.*
+
+# Configuracao especifica da maquina / utilizador (copiar a partir dos *.example.*).
+config/channels_config_structure/*.yaml
+!config/channels_config_structure/*.example.yaml
+config/sources.local.yaml
+config/youtube_accounts.local.yaml
+config/video_profiles.local.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Runtime data and generated media
+data/processed/state.json
+data/pending_uploads/*.json
+data/uploaded/*.json
+logs/*.log
+logs/last_run.json
+output/videos/*
+!output/videos/.gitkeep
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

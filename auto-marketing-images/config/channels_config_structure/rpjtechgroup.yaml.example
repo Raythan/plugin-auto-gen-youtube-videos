@@ -1,0 +1,37 @@
+# Copie para rpjtechgroup.yaml (gitignored) e ajuste conforme necessário.
+# Ver rpjtechgroup.yaml no repositório como referência completa.
+
+id: rpjtechgroup
+enabled: true
+youtube_account: rpjtechgroup
+video_templates:
+  - rpjtechgroup_default
+generate_times:
+  - "08:00"
+  - "20:00"
+
+content:
+  mode: gemini_freeform
+  topic_buffer_size: 20
+  script_prompt_profile: ai_tools_business
+  editorial:
+    focus: >-
+      Ferramentas de IA e como aplicar no negocio.
+    avoid: >-
+      Nao repetir temas dos RECENT_TOPICS.
+  tool_categories:
+    - chatbots e assistentes
+    - automacao de tarefas
+    - geracao de imagem e video
+
+brand:
+  script_prompt_profile: ai_tools_business
+  cta_short: >-
+    Quer IA no seu negocio? Fala com a RPJ Tech Group — conversa gratuita.
+    Site e e-mail na descricao.
+
+youtube_upload:
+  category_id: "28"
+  contains_synthetic_media: true
+  privacy_status: public   # public | unlisted | private
+  publish_mode: immediate  # immediate (default) | schedule (private + publishAt próxima hora cheia UTC)
